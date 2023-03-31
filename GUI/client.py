@@ -56,6 +56,7 @@ class LightChatGPTClient:
 
         # close the app 
         self.floating_window.close_app_signal.connect(self.close)
+        self.main_window.close_app_signal.connect(self.close)
 
         # user information
         self.floating_window.get_user_signal.connect(self.get_user_info_into_user_window)
@@ -68,9 +69,6 @@ class LightChatGPTClient:
 
     def register_hot_keys(self):
         self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
-
-    def unregister_hot_keys(self):
-        self.hot_keys.unregister(('control', 't'))
 
     '''
     signals

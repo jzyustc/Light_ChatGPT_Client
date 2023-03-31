@@ -8,8 +8,11 @@ from PyQt5.QtWidgets import *
 
 from GUI.api.chatgpt_server_api import ChatGPT_API
 
+from GUI.utils.local_hot_key import LocalHotkey
+
 class MainWindow(QMainWindow):
 	switch_floating_window_signal = pyqtSignal(bool)	# signal to switch to the floating window
+	close_app_signal = pyqtSignal()						# signal to close the app
 
 	def __init__(self, url, uid, hash_password):
 		super().__init__()
@@ -17,6 +20,9 @@ class MainWindow(QMainWindow):
 		self.url = url
 		self.uid = uid
 		self.hash_password = hash_password
+
+		self.hot_keys = LocalHotkey(self)
+		self.set_hot_keys()
 
 		self.w = 600
 		self.h = 400
@@ -235,6 +241,9 @@ class MainWindow(QMainWindow):
 	'''
 	API
 	'''
+
+	def set_hot_keys(self):
+		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_chat)
 
 	def add_display_item(self, text, color):
 		# add an item of question / answer for displaying
