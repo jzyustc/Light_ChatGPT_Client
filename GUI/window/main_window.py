@@ -33,8 +33,9 @@ class MainWindow(QMainWindow):
 		# style
 		self.set_font()		# font
 		self.op = 1.		# opacity of the window
-		self.is_chat_empty = True	# no chat
-		self.signal_move = False	# title move
+		self.is_chat_empty = True		# no chat
+		self.signal_move = False		# title move
+		self.new_chat_enabled = True	# is new_chat_button enabled
 
 		# GUI
 		self.main_UI()
@@ -319,6 +320,9 @@ class MainWindow(QMainWindow):
 		self.text_input.viewport().setCursor(Qt.ArrowCursor)
 		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#f7f7f8")
 
+		# unable new_chat
+		self.new_chat_enabled = False
+
 		# loading...
 		text = "loading"
 		self.num = 0
@@ -340,22 +344,26 @@ class MainWindow(QMainWindow):
 		self.text_input.viewport().setCursor(Qt.IBeamCursor)
 		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#ffffff")
 
+		# enable new_chat
+		self.new_chat_enabled = True
+
 		# loading...
 		self.timer.stop()
 		self.text_input.setText("")
 
+
 	def new_chat(self):
 		# create a new chat
+		if self.new_chat_enabled:
+			# delete all previous chats
+			for display_item in self.display_items:
+				display_item.deleteLater()
+			self.display_items = []
 
-		# delete all previous chats
-		for display_item in self.display_items:
-			display_item.deleteLater()
-		self.display_items = []
-
-		# show the no_chat display
-		if not self.is_chat_empty:
-			self.no_chat_image_block.show()
-			self.is_chat_empty = True
+			# show the no_chat display
+			if not self.is_chat_empty:
+				self.no_chat_image_block.show()
+				self.is_chat_empty = True
 
 
 	'''
