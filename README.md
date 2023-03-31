@@ -27,6 +27,15 @@ For using
 - [ ] AI drawing
 - [ ] Google translation 
 
+TODO:
+- [ ] out of screen
+- [ ] shortcut
+- [ ] main window => outof screen => floating window
+- [ ] Q&A item height adjustement
+- [ ] relative size adjustment
+- [ ] resize window
+- [ ] icon in right menu
+
 > Contact us:
 > - jzy_ustc@mail.ustc.edu.cn
 > - bitaswood@mail.ustc.edu.cn
