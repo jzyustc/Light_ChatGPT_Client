@@ -2,9 +2,6 @@
 
 *Light ChatGPT is a light-weight application for ChatGPT. The client is buit with Python and PyQT5.* 
 
-Paper: "Learning What and Where - Unsupervised Disentangling Location and Identity Tracking" | [arXiv](https://arxiv.org/abs/2205.13349)
-
-
 ### Requirements
 
 Python 3.8 and packages in `envs/requirements.txt` are recommanded.
@@ -29,3 +26,7 @@ For using
 - [x] ChatGPT
 - [ ] AI drawing
 - [ ] Google translation 
+
+> Contact us:
+> - jzy_ustc@mail.ustc.edu.cn
+> - bitaswood@mail.ustc.edu.cn
