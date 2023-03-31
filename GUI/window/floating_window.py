@@ -5,6 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from system_hotkey import SystemHotkey
+
 
 from GUI.window.user_window import UserWindow
 

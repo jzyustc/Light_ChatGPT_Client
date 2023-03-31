@@ -3,12 +3,19 @@ import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 from GUI.window.main_window import MainWindow
 from GUI.window.floating_window import FloatingWindow
+from GUI.utils.global_hot_key import GlobalHotkeys
 
+from system_hotkey import SystemHotkey
 
 class LightChatGPTClient:
 
+    
     def __init__(self):
+
         self.app = QtWidgets.QApplication(sys.argv)
+
+        # a flag to show whether it is main windw now
+        self.main_flag = False
 
         self.user_info_path = "data/info.json"
         self.init_user(info_path=self.user_info_path)
@@ -17,6 +24,7 @@ class LightChatGPTClient:
         self.floating_window = FloatingWindow("data/images/floating_window_icon.png")
 
         self.init_pos()
+        self.init_hot_keys()
         self.init_signals()
 
     '''
@@ -43,6 +51,9 @@ class LightChatGPTClient:
         self.main_window.switch_floating_window_signal.connect(self.switch_floating)
         self.floating_window.switch_main_window_signal.connect(self.switch_main)
 
+        # global hot key signal
+        self.global_hot_keys.hot_key_signal.connect(self.switch_window)
+
         # close the app 
         self.floating_window.close_app_signal.connect(self.close)
 
@@ -50,6 +61,16 @@ class LightChatGPTClient:
         self.floating_window.get_user_signal.connect(self.get_user_info_into_user_window)
         self.floating_window.set_user_signal.connect(self.set_user_info)
 
+    def init_hot_keys(self):
+        self.hot_keys = SystemHotkey()
+        self.register_hot_keys()
+        self.global_hot_keys = GlobalHotkeys()
+
+    def register_hot_keys(self):
+        self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
+
+    def unregister_hot_keys(self):
+        self.hot_keys.unregister(('control', 't'))
 
     '''
     signals
@@ -87,6 +108,16 @@ class LightChatGPTClient:
         self.floating_window.show()
         self.main_window.hide()
 
+    def switch_window(self, hot_key):
+        if self.main_flag:
+            if hot_key == 'ctrl+t':
+                self.switch_floating()
+                self.main_flag = False
+        else:
+            if hot_key == 'ctrl+t':
+                self.switch_main()
+                self.main_flag = True
+
     def get_user_info_into_user_window(self, user_window):
         user_window.uid_text_input.setText(self.uid)
         # user_window.password_text_input.setText(self.password)
@@ -104,7 +135,12 @@ class LightChatGPTClient:
             }
             json.dump(user_info,f)
 
-        
+    def hot_key_func(self, hot_key_value):
+        # switch to main window
+        if hot_key_value == 'ctrl+t':
+            self.switch_window()
+        else:
+            pass
 
     '''
     run and close
