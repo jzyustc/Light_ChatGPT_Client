@@ -73,7 +73,7 @@ class LightChatGPTClient:
 
     def set_user_info(self, uid, hash_password):
         self.uid = self.main_window.uid = uid
-        self.has_password = self.main_window.hash_password = hash_password
+        self.hash_password = self.main_window.hash_password = hash_password
         
         # write into info.json
         with open(self.user_info_path, "w") as f:
