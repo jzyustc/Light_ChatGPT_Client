@@ -74,12 +74,12 @@ class FloatingWindow(QMainWindow):
 		self.groupBox_menu = QMenu(self)
 
 		# first item : user id
-		self.actionA = QAction(QIcon('data/images/new.png'),u'user',self)
+		self.actionA = QAction(QIcon('data/images/user.png'), u'user', self)
 		self.groupBox_menu.addAction(self.actionA)
 		self.actionA.triggered.connect(self.on_user_window_open)
 
 		# second item : close the whole app
-		self.actionB = QAction(QIcon('data/images/new.png'),u'close',self)
+		self.actionB = QAction(QIcon('data/images/close.png'), u'close', self)
 		self.groupBox_menu.addAction(self.actionB)
 		self.actionB.triggered.connect(lambda : self.close_app_signal.emit())
 
@@ -159,11 +159,26 @@ class FloatingWindow(QMainWindow):
 			if self.signal_move:
 				# move event : canceling the moving
 				self.signal_move = False
-				# self.setCursor(QCursor(Qt.ArrowCursor))
+				self.out_of_screen_set_pos()
 			else:
 				# click event
 				self.switch_main_window_signal.emit()
 
+	def out_of_screen_set_pos(self):
+		# when the window is out of the screen
+		device_h, device_w, x, y = self.get_device_shape_and_pos()
+		x = max(0, min(x, device_w - self.w))
+		y = max(0, min(y, device_h - self.h))
+		self.set_pos(x, y)
+
+
+	def get_device_shape_and_pos(self):
+		device = QApplication.desktop()
+		device_h = device.height()
+		device_w = device.width()
+		x, y = self.pos().x(), self.pos().y()
+		return device_h, device_w, x, y
+	
 	'''
 	control
 	'''

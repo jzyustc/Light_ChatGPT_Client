@@ -50,20 +50,40 @@ class LightChatGPTClient:
         self.floating_window.get_user_signal.connect(self.get_user_info_into_user_window)
         self.floating_window.set_user_signal.connect(self.set_user_info)
 
+
     '''
     signals
     '''
     def switch_main(self):
-        x = self.floating_window.pos().x() - self.main_window.w
-        y = self.floating_window.pos().y() - (self.main_window.h - self.floating_window.h) / 2
+        device_h, device_w, nx, ny = self.floating_window.get_device_shape_and_pos()
+        nh, nw = self.floating_window.h, self.floating_window.w
+
+        if nx + nw // 2 < device_w // 2: # in left half screen
+            x = nx
+        else: # in right half screen
+            x = nx + nw - self.main_window.w
+        y = ny - (self.main_window.h - nh) / 2
+
         self.main_window.set_pos(x, y)
+        self.main_window.set_window_opacity(self.main_window.op)
         self.main_window.show()
         self.floating_window.hide()
 
-    def switch_floating(self):
-        x = self.main_window.pos().x() + self.main_window.w
-        y = self.main_window.pos().y() + (self.main_window.h - self.floating_window.h) / 2
+    def switch_floating(self, check_out_of_range):
+        device_h, device_w, nx, ny = self.main_window.get_device_shape_and_pos()
+        nh, nw = self.main_window.h, self.main_window.w
+
+        if nx + nw // 2 < device_w // 2: # in left half screen
+            x = nx
+        else: # in right half screen
+            x = nx + nw - self.floating_window.w
+        y = ny - (self.floating_window.h - nh) / 2
+
         self.floating_window.set_pos(x, y)
+
+        if check_out_of_range:
+            self.floating_window.out_of_screen_set_pos()
+
         self.floating_window.show()
         self.main_window.hide()
 
@@ -84,6 +104,7 @@ class LightChatGPTClient:
             }
             json.dump(user_info,f)
 
+        
 
     '''
     run and close

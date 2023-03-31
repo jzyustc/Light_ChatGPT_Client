@@ -28,9 +28,7 @@ For using
 - [ ] Google translation 
 
 TODO:
-- [ ] out of screen
 - [ ] shortcut
-- [ ] main window => outof screen => floating window
 - [ ] Q&A item height adjustement
 - [ ] relative size adjustment
 - [ ] resize window

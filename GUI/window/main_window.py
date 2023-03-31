@@ -7,9 +7,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from GUI.api.chatgpt_server_api import ChatGPT_API
+from GUI.utils.timer import Timer
 
 class MainWindow(QMainWindow):
-	switch_floating_window_signal = pyqtSignal()	# signal to switch to the floating window
+	switch_floating_window_signal = pyqtSignal(bool)	# signal to switch to the floating window
 
 	def __init__(self, url, uid, hash_password):
 		super().__init__()
@@ -108,7 +109,7 @@ class MainWindow(QMainWindow):
 
 		# button : switch
 		self.button_switch_floating_window = QLabel()
-		self.button_switch_floating_window.mousePressEvent = lambda event : self.switch_floating_window_signal.emit()
+		self.button_switch_floating_window.mousePressEvent = lambda event : self.switch_floating_window_signal.emit(False)
 		self.button_switch_floating_window.setFixedSize(self.title_h - 10, self.title_h - 10)
 		self.button_switch_floating_window.setPixmap(QPixmap("data/images/shrink.png"))
 		self.button_switch_floating_window.setScaledContents(True)
@@ -206,9 +207,10 @@ class MainWindow(QMainWindow):
 		self.button_new_chat.setScaledContents(True)
 
 		# text : input
+		self.text_input_style_sheet = f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;"
 		self.text_input = QTextEdit()
 		self.text_input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;")
+		self.text_input.setStyleSheet(self.text_input_style_sheet)
 		self.text_input.setFont(self.font)
 
 		if not hasattr(self.text_input, "keyPressEventRaw"):
@@ -281,6 +283,7 @@ class MainWindow(QMainWindow):
 		if len(text) == 0:
 			return
 		self.text_input.setText("")
+		self.unable_text_input()
 
 		# add question display
 		self.add_display_item(text, "#ffffff")
@@ -294,8 +297,41 @@ class MainWindow(QMainWindow):
 
 		# chatgpt API
 		chatgpt_api = ChatGPT_API(url=self.url, uid=self.uid, hash_password=self.hash_password, new_chat=new_chat, question=text)
-		chatgpt_api.get_answer_signal.connect(lambda : self.add_display_item(chatgpt_api.answer, "#f7f7f8"))	# add answer
+		chatgpt_api.get_answer_signal.connect(lambda : {
+				self.add_display_item(chatgpt_api.answer, "#f7f7f8"),
+				self.enable_text_input()
+			})	# add answer
 		chatgpt_api.start()
+
+	def unable_text_input(self):
+		self.text_input.setReadOnly(True)
+		# self.text_input.setTextInteractionFlags(Qt.NoTextInteraction)
+		self.text_input.viewport().setCursor(Qt.ArrowCursor)
+		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#f7f7f8")
+
+		# loading...
+		text = "loading"
+		self.num = 0
+		self.timer = QTimer()
+
+		def set_loading_text():
+			text_loading = text + self.num * "."
+			self.text_input.setText(text_loading)
+			self.num = (self.num + 1) % 6
+
+		self.timer.timeout.connect(set_loading_text)
+		self.timer.start(500)
+		
+
+	def enable_text_input(self):
+		self.text_input.setReadOnly(False)
+		# self.text_input.setTextInteractionFlags(Qt.TextEditorInteraction)
+		self.text_input.viewport().setCursor(Qt.IBeamCursor)
+		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#ffffff")
+
+		# loading...
+		self.timer.stop()
+		self.text_input.setText("")
 
 	def new_chat(self):
 		# create a new chat
@@ -322,6 +358,12 @@ class MainWindow(QMainWindow):
 			self.ask_question()
 		else:
 			self.text_input.keyPressEventRaw(event)
+
+	def set_window_opacity_half_tmp(self):
+		self.setWindowOpacity(self.op * 0.5)
+
+	def set_window_opacity(self, op):
+		self.setWindowOpacity(op)
 
 	def change_window_opacity(self, angleY):
 		if angleY > 0:
@@ -353,6 +395,14 @@ class MainWindow(QMainWindow):
 			self.move(event.globalPos() - self.mouse_drag_pos)
 			self.signal_move = True
 
+			# out of screen : change opacity
+			device_h, device_w, x, y = self.get_device_shape_and_pos()
+			if x < 0 or x > device_w - self.w or y < 0 or y > device_h - self.h:
+				self.set_window_opacity_half_tmp()
+			else:
+				self.set_window_opacity(self.op)
+
+
 	def release_on_title_event(self, event):
 		# listen event : mouse release
 		if event.button() == Qt.LeftButton:
@@ -360,6 +410,18 @@ class MainWindow(QMainWindow):
 				# move event : canceling the moving
 				self.signal_move = False
 		
+				# out of screen : switch
+				device_h, device_w, x, y = self.get_device_shape_and_pos()
+				if x < 0 or x > device_w - self.w or y < 0 or y > device_h - self.h:
+					self.switch_floating_window_signal.emit(True)
+
+	def get_device_shape_and_pos(self):
+		device = QApplication.desktop()
+		device_h = device.height()
+		device_w = device.width()
+		x, y = self.pos().x(), self.pos().y()
+		return device_h, device_w, x, y
+
 
 	'''
 	control
