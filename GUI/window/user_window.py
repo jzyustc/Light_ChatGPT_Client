@@ -135,7 +135,7 @@ class UserWindow(QMainWindow):
 		self.uid_text_input.setFixedSize(self.w - 3 * item_h, item_h)
 		self.uid_text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.uid_text_input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.uid_text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;")
+		self.uid_text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;")
 		self.uid_text_input.setFont(self.font)
 		
         ## add to uid block
@@ -167,7 +167,7 @@ class UserWindow(QMainWindow):
 		self.password_text_input.setFixedSize(self.w - 3 * item_h, item_h)
 		self.password_text_input.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.password_text_input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.password_text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;")
+		self.password_text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;")
 		self.password_text_input.setFont(self.font)
 		
         ## add to password block

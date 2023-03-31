@@ -207,7 +207,7 @@ class MainWindow(QMainWindow):
 		self.button_new_chat.setScaledContents(True)
 
 		# text : input
-		self.text_input_style_sheet = f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;"
+		self.text_input_style_sheet = f"border:1px solid #ccc;border-radius:5px;"
 		self.text_input = QTextEdit()
 		self.text_input.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.text_input.setStyleSheet(self.text_input_style_sheet)
