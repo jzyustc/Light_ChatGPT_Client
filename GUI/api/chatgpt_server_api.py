@@ -25,11 +25,12 @@ def add_header():
 class ChatGPT_API(QThread):
 	get_answer_signal = pyqtSignal()		# signal to send the answer of question 
 
-	def __init__(self, url, uid, new_chat, question):
+	def __init__(self, url, uid, hash_password, new_chat, question):
 		super().__init__()
 		# infos
 		self.url = url
 		self.uid = uid
+		self.hash_password = hash_password
 		self.new_chat = new_chat
 		self.question = question
 
@@ -40,6 +41,7 @@ class ChatGPT_API(QThread):
 		# get data for post
 		data = {
 			"uid" : self.uid,
+			"hash_password" : self.hash_password,
 			"new_chat" : self.new_chat,
 			"question" : self.question
 		}

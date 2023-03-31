@@ -1,7 +1,10 @@
 import sys
+import hashlib
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
 
 from GUI.window.user_window import UserWindow
 
@@ -10,7 +13,7 @@ class FloatingWindow(QMainWindow):
 	switch_main_window_signal = pyqtSignal()	# signal to switch to the main window
 	close_app_signal = pyqtSignal()				# signal to close the app
 	get_user_signal = pyqtSignal(QMainWindow)	# signal to get user information in user window
-	set_user_signal = pyqtSignal(str, int)		# signal to set user information
+	set_user_signal = pyqtSignal(str, str)		# signal to set user information
 
 	def __init__(self, icon_path):
 		super().__init__()
@@ -122,8 +125,8 @@ class FloatingWindow(QMainWindow):
 			# legal
 			return True, "legal"
 		
-		def hash_password(password):
-			return hash(password)
+		def hash_password_str(password):
+			return hashlib.md5(password.encode(encoding='UTF-8')).hexdigest()
 		
 		# judge if uid is legal
 		uid_legal, error_msg = judge_uid_legal(uid) 
@@ -132,7 +135,8 @@ class FloatingWindow(QMainWindow):
 			return
 		
 		# save info
-		self.set_user_signal.emit(uid, hash_password(password))
+		print(password, hash_password_str(password))
+		self.set_user_signal.emit(uid, hash_password_str(password))
 
 		# close
 		QMessageBox.information(self, 'save', 'Succeed to set user!', QMessageBox.Yes, QMessageBox.Yes)

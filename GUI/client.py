@@ -13,7 +13,7 @@ class LightChatGPTClient:
         self.user_info_path = "data/info.json"
         self.init_user(info_path=self.user_info_path)
 
-        self.main_window = MainWindow(self.url, self.uid, self.password)
+        self.main_window = MainWindow(self.url, self.uid, self.hash_password)
         self.floating_window = FloatingWindow("data/images/floating_window_icon.png")
 
         self.init_pos()
@@ -26,7 +26,7 @@ class LightChatGPTClient:
         self.info = json.load(open(info_path))
         self.url = self.info["url"]
         self.uid = self.info["uid"]
-        self.password = self.info["password"]
+        self.hash_password = self.info["hash_password"]
 
     def init_pos(self):
         # init pos
@@ -71,16 +71,16 @@ class LightChatGPTClient:
         user_window.uid_text_input.setText(self.uid)
         # user_window.password_text_input.setText(self.password)
 
-    def set_user_info(self, uid, password):
+    def set_user_info(self, uid, hash_password):
         self.uid = self.main_window.uid = uid
-        self.password = self.main_window.password = password
+        self.has_password = self.main_window.hash_password = hash_password
         
         # write into info.json
         with open(self.user_info_path, "w") as f:
             user_info = {
                 "url": self.url, 
                 "uid": uid, 
-                "password": password
+                "hash_password": hash_password
             }
             json.dump(user_info,f)
 

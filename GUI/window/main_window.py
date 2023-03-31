@@ -11,12 +11,12 @@ from GUI.api.chatgpt_server_api import ChatGPT_API
 class MainWindow(QMainWindow):
 	switch_floating_window_signal = pyqtSignal()	# signal to switch to the floating window
 
-	def __init__(self, url, uid, password):
+	def __init__(self, url, uid, hash_password):
 		super().__init__()
 		# info
 		self.url = url
 		self.uid = uid
-		self.password = password
+		self.hash_password = hash_password
 
 		self.w = 600
 		self.h = 400
@@ -289,7 +289,7 @@ class MainWindow(QMainWindow):
 			new_chat = "1"
 
 		# chatgpt API
-		chatgpt_api = ChatGPT_API(url=self.url, uid=self.uid, new_chat=new_chat, question=text)
+		chatgpt_api = ChatGPT_API(url=self.url, uid=self.uid, hash_password=self.hash_password, new_chat=new_chat, question=text)
 		chatgpt_api.get_answer_signal.connect(lambda : self.add_display_item(chatgpt_api.answer, "#f7f7f8"))	# add answer
 		chatgpt_api.start()
 
