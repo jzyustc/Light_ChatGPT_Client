@@ -21,7 +21,7 @@ class LightChatGPTClient:
         self.init_user(info_path=self.user_info_path)
 
         self.main_window = MainWindow(self.url, self.uid, self.hash_password)
-        self.floating_window = FloatingWindow("data/images/floating_window_icon.png")
+        self.floating_window = FloatingWindow("data/images/icon.png")
 
         self.init_pos()
         self.init_hot_keys()

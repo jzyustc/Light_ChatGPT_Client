@@ -28,6 +28,10 @@ class FloatingWindow(QMainWindow):
 		self.mouse_right_click_menu_UI()
 		self.user_window = None
 
+		self.op_leave = 0.5		# opacity of window when mouse leave the icon
+		self.op_leave_time = 0	# time to set the opacity
+		self.setWindowOpacity(self.op_leave)
+
 		# event info
 		self.signal_move = False
 
@@ -171,13 +175,26 @@ class FloatingWindow(QMainWindow):
 		y = max(0, min(y, device_h - self.h))
 		self.set_pos(x, y)
 
-
 	def get_device_shape_and_pos(self):
 		device = QApplication.desktop()
 		device_h = device.height()
 		device_w = device.width()
 		x, y = self.pos().x(), self.pos().y()
 		return device_h, device_w, x, y
+	
+	def leaveEvent(self, event):
+		timer = QTimer()
+
+		def on_timer():
+			self.setWindowOpacity(self.op_leave)
+			timer.stop()
+
+		timer.timeout.connect(on_timer)
+		timer.start(self.op_leave_time * 1000)
+		
+
+	def enterEvent(self, event):
+		self.setWindowOpacity(1.)
 	
 	'''
 	control
