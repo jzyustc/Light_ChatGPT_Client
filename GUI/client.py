@@ -10,9 +10,10 @@ class LightChatGPTClient:
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
 
-        self.init_user(info_path="data/info.json")
+        self.user_info_path = "data/info.json"
+        self.init_user(info_path=self.user_info_path)
 
-        self.main_window = MainWindow(self.url, self.uid)
+        self.main_window = MainWindow(self.url, self.uid, self.password)
         self.floating_window = FloatingWindow("data/images/floating_window_icon.png")
 
         self.init_pos()
@@ -73,7 +74,15 @@ class LightChatGPTClient:
     def set_user_info(self, uid, password):
         self.uid = self.main_window.uid = uid
         self.password = self.main_window.password = password
-        print(uid, password)
+        
+        # write into info.json
+        with open(self.user_info_path, "w") as f:
+            user_info = {
+                "url": self.url, 
+                "uid": uid, 
+                "password": password
+            }
+            json.dump(user_info,f)
 
 
     '''
