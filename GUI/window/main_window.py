@@ -320,6 +320,7 @@ class MainWindow(QMainWindow):
 			self.text_input.setText(text_loading)
 			self.num = (self.num + 1) % 6
 
+		set_loading_text()
 		self.timer.timeout.connect(set_loading_text)
 		self.timer.start(500)
 		
