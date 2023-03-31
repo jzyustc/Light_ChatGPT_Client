@@ -10,7 +10,7 @@ class FloatingWindow(QMainWindow):
 	switch_main_window_signal = pyqtSignal()	# signal to switch to the main window
 	close_app_signal = pyqtSignal()				# signal to close the app
 	get_user_signal = pyqtSignal(QMainWindow)	# signal to get user information in user window
-	set_user_signal = pyqtSignal(str, str)		# signal to set user information
+	set_user_signal = pyqtSignal(str, int)		# signal to set user information
 
 	def __init__(self, icon_path):
 		super().__init__()
@@ -86,19 +86,57 @@ class FloatingWindow(QMainWindow):
 	def on_user_window_open(self):
 		# create user_window, and get user information to fill in the textform
 		user_window = UserWindow()
+
+		# position
+		x = self.pos().x() - user_window.w
+		y = self.pos().y() - (user_window.h - self.h) / 2
+		user_window.set_pos(x, y)
+
+		# signal
 		self.get_user_signal.emit(user_window)
+
+		# show
 		user_window.show()
 
 		# set the close signal event
-		user_window.user_window_close_signal.connect(self.on_user_window_close)
+		user_window.save_user_info_signal.connect(self.on_user_window_save)
 
-	def on_user_window_close(self, user_window):
+	def on_user_window_save(self, user_window):
 		# when user_window closes, get the uid and password, then set them into user information
 		uid = user_window.uid_text_input.toPlainText()
 		password = user_window.password_text_input.toPlainText()
-		self.set_user_signal.emit(uid, password)
-		user_window.close()
-		user_window.deleteLater()
+
+		def judge_uid_legal(uid):
+			# length
+			len_judge = len(uid) == 4
+			if not len_judge:
+				return False, "uid must be a number wiuth a length of 4"
+			
+			# is number
+			digit_judge = True
+			for s in uid:
+				digit_judge = digit_judge & s.isdigit()
+			if not digit_judge:
+				return False, "uid must be a number wiuth a length of 4"
+			
+			# legal
+			return True, "legal"
+		
+		def hash_password(password):
+			return hash(password)
+		
+		# judge if uid is legal
+		uid_legal, error_msg = judge_uid_legal(uid) 
+		if not uid_legal:
+			QMessageBox.warning(self, "error", error_msg, QMessageBox.Cancel)
+			return
+		
+		# save info
+		self.set_user_signal.emit(uid, hash_password(password))
+
+		# close
+		QMessageBox.information(self, 'save', 'Succeed to set user!', QMessageBox.Yes, QMessageBox.Yes)
+		user_window.on_window_close()
 
 	def mousePressEvent(self, event):
 		if event.buttons() == Qt.LeftButton:

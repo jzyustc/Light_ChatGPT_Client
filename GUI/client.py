@@ -69,7 +69,7 @@ class LightChatGPTClient:
 
     def get_user_info_into_user_window(self, user_window):
         user_window.uid_text_input.setText(self.uid)
-        user_window.password_text_input.setText(self.password)
+        # user_window.password_text_input.setText(self.password)
 
     def set_user_info(self, uid, password):
         self.uid = self.main_window.uid = uid
