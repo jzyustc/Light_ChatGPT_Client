@@ -6,10 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from system_hotkey import SystemHotkey
-
 from GUI.api.chatgpt_server_api import ChatGPT_API
-from GUI.utils.timer import Timer
 
 class MainWindow(QMainWindow):
 	switch_floating_window_signal = pyqtSignal(bool)	# signal to switch to the floating window
