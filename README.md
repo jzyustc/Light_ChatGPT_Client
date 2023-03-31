@@ -24,7 +24,6 @@ For using
 - [ ] Google translation 
 
 TODO:
-- [ ] Q&A item height adjustement
 - [ ] relative size adjustment
 - [ ] resize window
 
