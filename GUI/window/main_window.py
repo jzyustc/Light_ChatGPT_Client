@@ -211,6 +211,7 @@ class MainWindow(QMainWindow):
 		self.text_input.setStyleSheet(f"border:1px solid #ccc;border-radius:5px;box-shadow:#ccc 0px 0px 10px;")
 		self.text_input.setFont(self.font)
 
+
 		s = 1
 		s1, s2, s3, s4, s5 = int(0 * s), int(4* s), int(10 * s), int(20 * s), int(10 * s)
 		self.text_input.verticalScrollBar().setStyleSheet(self.get_vertical_scroll_bar_style(s1, s2, s3, s4, s5))
@@ -310,6 +311,14 @@ class MainWindow(QMainWindow):
 	'''
 	event
 	'''
+	def enter_press_event(self, event):
+		enter_key = [Qt.Key_Enter, Qt.Key_Return]
+			self.text_input.textCursor().insertText('\n')
+		elif event.key() in enter_key:
+			self.ask_question()
+		else:
+			self.text_input.keyPressEventRaw(event)
+
 	def change_window_opacity(self, angleY):
 		if angleY > 0:
 			self.op = min(1., self.op + 0.1)
