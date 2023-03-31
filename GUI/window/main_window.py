@@ -257,9 +257,10 @@ class MainWindow(QMainWindow):
 		display_text.setText(text)
 		display_text.setFont(self.font)
 		display_text.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-		display_text.document().adjustSize()
-		display_text_h = display_text.document().size().height() + 20
+		display_text.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		
+		display_text.document().setTextWidth(self.w - 4 * s)
+		display_text_h = display_text.document().size().height() + 25
 		display_text.setFixedSize(self.w - 4 * s, display_text_h)
 
 		# left widget
@@ -279,8 +280,7 @@ class MainWindow(QMainWindow):
 		display_item_layout.addWidget(left_widget)
 		display_item_layout.addWidget(display_text)
 		display_item_layout.addWidget(right_widget)
-		display_item_layout.setContentsMargins(0, 10, 0, 0)
-		display_item_layout.setSpacing(0)
+		display_item_layout.setContentsMargins(0, 10, 0, 10)
 
 		display_item.setLayout(display_item_layout)
 
