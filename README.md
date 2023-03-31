@@ -23,7 +23,7 @@ python qt.py
 
 For GUI
 - [x] A floating window
-- [ ] Set users
+- [x] Set users
 
 For using 
 - [x] ChatGPT
