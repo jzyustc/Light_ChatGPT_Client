@@ -18,21 +18,15 @@ python qt.py
 
 ### Functions
 
-For GUI
-- [x] A floating window
-- [x] Set users
-
 For using 
 - [x] ChatGPT
 - [ ] AI drawing
 - [ ] Google translation 
 
 TODO:
-- [ ] shortcut
 - [ ] Q&A item height adjustement
 - [ ] relative size adjustment
 - [ ] resize window
-- [ ] icon in right menu
 
 > Contact us:
 > - jzy_ustc@mail.ustc.edu.cn
