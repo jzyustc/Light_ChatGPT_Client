@@ -52,7 +52,7 @@ class LightChatGPTClient:
         self.floating_window.switch_main_window_signal.connect(self.switch_main)
 
         # global hot key signal
-        self.global_hot_keys.hot_key_signal.connect(self.switch_window)
+        self.global_hot_keys.hot_key_signal.connect(self.hot_key_func)
 
         # close the app 
         self.floating_window.close_app_signal.connect(self.close)
@@ -108,15 +108,13 @@ class LightChatGPTClient:
         self.floating_window.show()
         self.main_window.hide()
 
-    def switch_window(self, hot_key):
+    def switch_window(self):
         if self.main_flag:
-            if hot_key == 'ctrl+t':
-                self.switch_floating()
-                self.main_flag = False
+            self.switch_floating(False)
+            self.main_flag = False
         else:
-            if hot_key == 'ctrl+t':
-                self.switch_main()
-                self.main_flag = True
+            self.switch_main()
+            self.main_flag = True
 
     def get_user_info_into_user_window(self, user_window):
         user_window.uid_text_input.setText(self.uid)
