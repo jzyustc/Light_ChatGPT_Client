@@ -6,6 +6,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from system_hotkey import SystemHotkey
+
 from GUI.api.chatgpt_server_api import ChatGPT_API
 
 class MainWindow(QMainWindow):
@@ -46,6 +48,7 @@ class MainWindow(QMainWindow):
 	GUI
 	'''
 	def main_UI(self):
+
 		# set window type
 		self.setWindowFlag(Qt.FramelessWindowHint)	# without framework
 		self.setWindowFlag(Qt.WindowStaysOnTopHint)	# pin to the top
@@ -233,6 +236,7 @@ class MainWindow(QMainWindow):
 	'''
 	API
 	'''
+
 	def add_display_item(self, text, color):
 		# add an item of question / answer for displaying
 		# text : text of question / answer
@@ -314,6 +318,7 @@ class MainWindow(QMainWindow):
 	'''
 	event
 	'''
+
 	def enter_press_event(self, event):
 		enter_key = [Qt.Key_Enter, Qt.Key_Return]
 		if event.modifiers() == Qt.ControlModifier and event.key() in enter_key:
