@@ -352,7 +352,6 @@ class MainWindow(QMainWindow):
 	'''
 	event
 	'''
-
 	def enter_press_event(self, event):
 		enter_key = [Qt.Key_Enter, Qt.Key_Return]
 		if event.modifiers() == Qt.ControlModifier and event.key() in enter_key:
