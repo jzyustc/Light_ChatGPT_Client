@@ -1,18 +1,22 @@
 import sys
 import time
+import json
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from .api.chatgpt_server_api import ChatGPT_API
+from GUI.api.chatgpt_server_api import ChatGPT_API
 
 class MainWindow(QMainWindow):
 	switch_floating_window_signal = pyqtSignal()	# signal to switch to the floating window
 
-	def __init__(self):
+	def __init__(self, url, uid):
 		super().__init__()
 		# info
+		self.url = url
+		self.uid = uid
+
 		self.w = 600
 		self.h = 400
 		self.title_h = 40
@@ -23,12 +27,14 @@ class MainWindow(QMainWindow):
 		self.set_font()		# font
 		self.op = 1.		# opacity of the window
 		self.is_chat_empty = True	# no chat
+		self.signal_move = False	# title move
 
 		# GUI
 		self.main_UI()
 		self.title_UI()
 		self.display_UI()
 		self.control_UI()
+
 
 	def set_font(self):
 		self.font = QFont()
@@ -80,6 +86,8 @@ class MainWindow(QMainWindow):
 		return style_sheet
 
 	def title_UI(self):
+		# title UI includes the title
+
 		# set title
 		self.title_widget = QWidget()
 		self.title_widget.setFixedSize(self.w, self.title_h)
@@ -99,7 +107,7 @@ class MainWindow(QMainWindow):
 
 		# button : switch
 		self.button_switch_floating_window = QLabel()
-		self.button_switch_floating_window.mousePressEvent = lambda event : self.switch_floating_window()
+		self.button_switch_floating_window.mousePressEvent = lambda event : self.switch_floating_window_signal.emit()
 		self.button_switch_floating_window.setFixedSize(self.title_h - 10, self.title_h - 10)
 		self.button_switch_floating_window.setPixmap(QPixmap("data/images/shrink.png"))
 		self.button_switch_floating_window.setScaledContents(True)
@@ -116,12 +124,13 @@ class MainWindow(QMainWindow):
 		self.main_layout.addWidget(self.title_widget)
 
 	def display_UI(self):
+		# display UI includes content in the middle (question / answer items, or no_chat display)
+
 		# display table
 		self.display_table = QWidget()
 		self.display_table_layout = QVBoxLayout()
 		self.display_table_layout.setContentsMargins(0, 0, 0, 0)
 		self.display_table_layout.setSpacing(0)
-		# self.display_table_layout.setAlignment(Qt.AlignTop)
 		self.display_table.setLayout(self.display_table_layout)
 
 		self.display_table_layout.addStretch(1)
@@ -170,6 +179,8 @@ class MainWindow(QMainWindow):
 		self.main_layout.addWidget(self.display_scroll)
 
 	def control_UI(self):
+		# control UI includes content in the bottom ("send" button, question input box, "new chat" button)
+
 		h =  self.h - self.display_h - self.title_h - 20
 
 		# set control
@@ -181,7 +192,7 @@ class MainWindow(QMainWindow):
 
 		# button : send
 		self.button_send = QLabel()
-		self.button_send.mousePressEvent = lambda event : self.add_question()
+		self.button_send.mousePressEvent = lambda event : self.ask_question()
 		self.button_send.setFixedSize(h // 2 , h // 2)
 		self.button_send.setPixmap(QPixmap("data/images/send.png"))
 		self.button_send.setScaledContents(True)
@@ -218,6 +229,10 @@ class MainWindow(QMainWindow):
 	API
 	'''
 	def add_display_item(self, text, color):
+		# add an item of question / answer for displaying
+		# text : text of question / answer
+		# color : background color of the item
+
 		s = int(self.display_scroll_bar_style[-1] * 1.5)
 
 		# display text
@@ -255,43 +270,37 @@ class MainWindow(QMainWindow):
 		self.display_items.append(display_item)
 		self.display_table_layout.addWidget(display_item)
 
-	def add_question(self):
-		# text
+	def ask_question(self):
+		# get text of the question
 		text = self.text_input.toPlainText()
 		if len(text) == 0:
 			return
 		self.text_input.setText("")
 
-		# TODO : test
-		self.add_display_item(text[1:], "#ffffff")
+		# add question display
+		self.add_display_item(text, "#ffffff")
 
-		# add
-		# self.add_display_item(text, "#ffffff")
-
-		# no_chat
+		# if there is no previous chat, start a new chat
 		new_chat = "0"
 		if self.is_chat_empty:
 			self.no_chat_image_block.close()
 			self.is_chat_empty = False
 			new_chat = "1"
 
-		# API
-		chatgpt_api = ChatGPT_API(info_path="data/info.json")
-		chatgpt_api.new_chat = new_chat
-		chatgpt_api.question = text
-		chatgpt_api.signal.connect(lambda : self.add_answer(chatgpt_api.answer))
+		# chatgpt API
+		chatgpt_api = ChatGPT_API(url=self.url, uid=self.uid, new_chat=new_chat, question=text)
+		chatgpt_api.get_answer_signal.connect(lambda : self.add_display_item(chatgpt_api.answer, "#f7f7f8"))	# add answer
 		chatgpt_api.start()
 
-	def add_answer(self, text):
-		# add
-		self.add_display_item(text, "#f7f7f8")
-
 	def new_chat(self):
+		# create a new chat
+
+		# delete all previous chats
 		for display_item in self.display_items:
 			display_item.deleteLater()
 		self.display_items = []
 
-		# no_chat
+		# show the no_chat display
 		if not self.is_chat_empty:
 			self.no_chat_image_block.show()
 			self.is_chat_empty = True
@@ -323,6 +332,7 @@ class MainWindow(QMainWindow):
 		if event.buttons() == Qt.LeftButton:
 			# left button => moving event
 			self.mouse_drag_pos = event.globalPos() - self.pos()
+			self.signal_move = False
 
 	def move_on_title_event(self, event):
 		if event.buttons() == Qt.LeftButton:
@@ -331,12 +341,11 @@ class MainWindow(QMainWindow):
 
 	def release_on_title_event(self, event):
 		# listen event : mouse release
-		if self.signal_move:
-			# move event : canceling the moving
-			self.signal_move = False
-
-	def switch_floating_window(self):
-		self.switch_floating_window_signal.emit()
+		if event.button() == Qt.LeftButton:
+			if self.signal_move:
+				# move event : canceling the moving
+				self.signal_move = False
+		
 
 	'''
 	control

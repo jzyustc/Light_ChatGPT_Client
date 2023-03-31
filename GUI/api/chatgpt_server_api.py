@@ -1,11 +1,8 @@
 import requests
 import random
-import json
-import time
-from threading import Thread
 
 from PyQt5.QtCore import QThread, pyqtSignal
-from threading import Thread
+
 # generate random ip address
 def random_ip():
 	a = random.randint(1, 255)
@@ -26,38 +23,39 @@ def add_header():
 
 
 class ChatGPT_API(QThread):
-	signal = pyqtSignal()
+	get_answer_signal = pyqtSignal()		# signal to send the answer of question 
 
-	def __init__(self, info_path="data/info.json", *args, **kwargs):
+	def __init__(self, url, uid, new_chat, question):
 		super().__init__()
-
-		self.info = json.load(open(info_path))
-		self.url = self.info["url"]
-		self.uid = self.info["uid"]
-
-		self.main_win = kwargs.get('main_win')
+		# infos
+		self.url = url
+		self.uid = uid
+		self.new_chat = new_chat
+		self.question = question
 
 	def __del__(self):
 		self.wait()
 
 	def run(self):
-		# data = {
-		# 	"uid" : self.uid,
-		# 	"new_chat" : self.new_chat,
-		# 	"question" : self.question
-		# }
+		# get data for post
 		data = {
-			"uid" : f"000{self.question[0]}",
+			"uid" : self.uid,
 			"new_chat" : self.new_chat,
-			"question" : self.question[1:]
+			"question" : self.question
 		}
 		print(data, self.url)
+
+		# post
 		response = requests.post(url=self.url + "/chat", headers=add_header(), data=data)
+
+		# answer
 		self.answer = response.content
 		if type(self.answer) == bytes:
 			self.answer = self.answer.decode()
-		print(self.answer)
-		self.signal.emit()
+
+		# signal for return
+		self.get_answer_signal.emit()
+
 
 if __name__ == "__main__":
 	url = "http://23.254.230.133:12346/chat"
