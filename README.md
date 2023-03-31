@@ -1,7 +1,5 @@
 # Light ChatGPT (Client)
 
-aghsdjjaskdgjksg
-
 *Light ChatGPT is a light-weight application for ChatGPT. The client is buit with Python and PyQT5.* 
 
 ### Requirements
