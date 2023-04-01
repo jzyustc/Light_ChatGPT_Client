@@ -9,11 +9,22 @@ Python 3.8 and packages in `envs/requirements.txt` are recommanded.
 
 ### Usage
 
-Run the GUI with command :
+You can choose to run the application in python or in .exe file freely :
+
+**1. Run the GUI with python**:
 
 ```bash
 python qt.py
 ```
+
+**2. Install and run .exe application**:
+
+```bash
+python generate_pyinstall_cmd.py
+```
+
+Then the application is installed in folder `./dist/qt`, and the application file is in  `./dist/qt/qt.exe`.
+
 
 
 ### Functions
