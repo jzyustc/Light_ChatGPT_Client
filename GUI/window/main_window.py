@@ -179,6 +179,7 @@ class MainWindow(QMainWindow):
 		if event.buttons() == Qt.LeftButton:
 			self.move(event.globalPos() - self.mouse_drag_pos)
 			self.signal_move = True
+			self.plugins_menu_window.hide()
 
 			# out of screen : change opacity
 			device_h, device_w, x, y = self.get_device_shape_and_pos()
