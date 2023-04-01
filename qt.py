@@ -2,6 +2,26 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from GUI.client import LightChatGPTClient
 
+import GUI.api
+import GUI.api.chatgpt_server_api
+import GUI.api.google_translation_api
+
+import GUI.plugins
+import GUI.plugins.chatgpt
+import GUI.plugins.google_translate
+
+import GUI.utils
+import GUI.utils.global_hot_key
+import GUI.utils.language
+import GUI.utils.local_hot_key
+import GUI.utils.position
+
+import GUI.window
+import GUI.window.floating_window
+import GUI.window.main_window
+import GUI.window.plugins_menu_window
+import GUI.window.user_window
+
 if __name__ == '__main__':
     client = LightChatGPTClient()
     client.run()
