@@ -17,25 +17,20 @@ class LightChatGPTClient:
         # a flag to show whether it is main windw now
         self.main_flag = False
 
-        self.user_info_path = "data/info.json"
-        self.init_user(info_path=self.user_info_path)
-
-        self.main_window = MainWindow(self.url, self.uid, self.hash_password)
+        # window
+        self.main_window = MainWindow(["chatgpt", "test"])
         self.floating_window = FloatingWindow("data/images/icon.png")
 
+        # init
         self.init_pos()
         self.init_hot_keys()
         self.init_signals()
+        self.init_user(info_path="data/info.json")
+
 
     '''
     initialize
     '''
-    def init_user(self, info_path):
-        self.info = json.load(open(info_path))
-        self.url = self.info["url"]
-        self.uid = self.info["uid"]
-        self.hash_password = self.info["hash_password"]
-
     def init_pos(self):
         # init pos
         device = QtWidgets.QApplication.desktop()
@@ -70,6 +65,16 @@ class LightChatGPTClient:
     def register_hot_keys(self):
         self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
 
+    def init_user(self, info_path):
+        self.user_info_path = info_path
+        self.info = json.load(open(info_path))
+
+        self.url = self.info["url"]
+        self.uid = self.info["uid"]
+        self.hash_password = self.info["hash_password"]
+
+        self.main_window.chatgpt_window.set_info(self.url, self.uid, self.hash_password)
+        
     '''
     signals
     '''

@@ -1,16 +1,17 @@
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 
 
 class LocalHotkey:
-    def __init__(self, window:QMainWindow):
+    def __init__(self, window:QWidget):
         self.window = window
+        self.main_window = window.parent
 
         self.window.keyPressEvent = self.hot_key_event
         self.hot_key_list = [{
             'modifier': Qt.ControlModifier,
             'key': Qt.Key_Q,
-            'func': self.window.close_app_signal.emit
+            'func': self.main_window.close_app_signal.emit
         }]
 
     def hot_key_event(self, event):

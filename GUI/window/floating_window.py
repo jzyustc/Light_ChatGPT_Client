@@ -139,7 +139,6 @@ class FloatingWindow(QMainWindow):
 			return
 		
 		# save info
-		print(password, hash_password_str(password))
 		self.set_user_signal.emit(uid, hash_password_str(password))
 
 		# close
