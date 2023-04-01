@@ -6,8 +6,10 @@ from PyQt5.QtWidgets import *
 class UserWindow(QMainWindow):
 	save_user_info_signal = pyqtSignal(QMainWindow)	    # signal to save the user information
 	
-	def __init__(self):
+	def __init__(self, parent=None):
 		super().__init__()
+		self.parent = parent
+
 		# info
 		self.w = 400
 		self.h = 300

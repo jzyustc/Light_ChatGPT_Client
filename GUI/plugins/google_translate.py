@@ -6,10 +6,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from GUI.api.google_translation_api import GoogleTranslation_API
 from GUI.utils.local_hot_key import LocalHotkey
 
 
-class TestTWindow(QWidget):
+class GoogleTranslationWindow(QWidget):
 
 	def __init__(self, parent, title):
 		super().__init__(parent)
@@ -28,10 +29,10 @@ class TestTWindow(QWidget):
 
         # style
 		self.set_font_background()		            # font for the background 
-		self.is_chat_empty = True		# no chat
+		self.is_translation_empty = True		# no translation
 
 		# flag
-		self.new_chat_enabled = True	# is new_chat_button enabled
+		self.new_translation_enabled = True	# is new_translation_button enabled
 
 		# GUI
 		self.window_UI()
@@ -40,26 +41,24 @@ class TestTWindow(QWidget):
 		
         # add to parent
 		self.parent.plugins_layout.addWidget(self)
-    
-	def set_info(self, url, uid, hash_password):
-		self.url = url
-		self.uid = uid
-		self.hash_password = hash_password
-
+        
+	def set_info(self):
+		self.url = self.parent.parent.url
+		
 	def set_font_background(self):
 		self.font_background = QFont()
 		self.font_background.setPointSize(20)
 		self.font_background.setFamily(self.parent.font_type)
 		
 	def set_hot_keys(self):
-		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_chat)
+		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_translation)
 
 	'''
 	GUI
 	'''
 	def window_UI(self):
 		# set window size
-		self.setObjectName("chat")
+		self.setObjectName("translate")
 		self.setFixedSize(self.w, self.h)
 
 		# set window
@@ -89,7 +88,7 @@ class TestTWindow(QWidget):
 		return style_sheet
 
 	def display_UI(self):
-		# display UI includes content in the middle (question / answer items, or no_chat display)
+		# display UI includes content in the middle (question / answer items, or no_translation display)
 
 		# display table
 		self.display_table = QWidget()
@@ -121,25 +120,25 @@ class TestTWindow(QWidget):
 
 		self.display_scroll.setWidget(self.display_table)
 
-		# used when no chat:
-		self.no_chat_image_block = QWidget()
-		self.no_chat_image_block.setFixedSize(self.w, self.display_h - 20)
-		self.no_chat_image_block_layout = QGridLayout()
-		self.no_chat_image_block.setLayout(self.no_chat_image_block_layout)
-		self.no_chat_image_block_layout.setAlignment(Qt.AlignCenter)
+		# used when no translation:
+		self.no_translation_image_block = QWidget()
+		self.no_translation_image_block.setFixedSize(self.w, self.display_h - 20)
+		self.no_translation_image_block_layout = QGridLayout()
+		self.no_translation_image_block.setLayout(self.no_translation_image_block_layout)
+		self.no_translation_image_block_layout.setAlignment(Qt.AlignCenter)
 
-		self.no_chat_image = QLabel()
-		self.no_chat_image.setText("Light Chat ^_^ ~")
-		self.no_chat_image.setFont(self.font_background)
+		self.no_translation_image = QLabel()
+		self.no_translation_image.setText("Google Translation \(^_^)/ ")
+		self.no_translation_image.setFont(self.font_background)
 
-		self.no_chat_image_block_layout.addWidget(self.no_chat_image, 0, 0)
-		self.display_table_layout.addWidget(self.no_chat_image_block)
+		self.no_translation_image_block_layout.addWidget(self.no_translation_image, 0, 0)
+		self.display_table_layout.addWidget(self.no_translation_image_block)
 
 		# add to main window
 		self.window_layout.addWidget(self.display_scroll)
 
 	def control_UI(self):
-		# control UI includes content in the bottom ("send" button, question input box, "new chat" button)
+		# control UI includes content in the bottom ("send" button, question input box, "new translation" button)
 
 		h =  self.h - self.display_h - 20
 
@@ -152,17 +151,17 @@ class TestTWindow(QWidget):
 
 		# button : send
 		self.button_send = QLabel()
-		self.button_send.mousePressEvent = lambda event : self.ask_question()
+		self.button_send.mousePressEvent = lambda event : self.translate()
 		self.button_send.setFixedSize(h // 2 , h // 2)
 		self.button_send.setPixmap(QPixmap("data/images/send.png"))
 		self.button_send.setScaledContents(True)
 
-		# button : new chat
-		self.button_new_chat = QLabel()
-		self.button_new_chat.mousePressEvent = lambda event : self.new_chat()
-		self.button_new_chat.setFixedSize(h // 2 , h // 2)
-		self.button_new_chat.setPixmap(QPixmap("data/images/new.png"))
-		self.button_new_chat.setScaledContents(True)
+		# button : new translation
+		self.button_new_translation = QLabel()
+		self.button_new_translation.mousePressEvent = lambda event : self.new_translation()
+		self.button_new_translation.setFixedSize(h // 2 , h // 2)
+		self.button_new_translation.setPixmap(QPixmap("data/images/new.png"))
+		self.button_new_translation.setScaledContents(True)
 
 		# text : input
 		self.text_input_style_sheet = f"border:1px solid #ccc;border-radius:5px;"
@@ -180,7 +179,7 @@ class TestTWindow(QWidget):
 		# add to control
 		self.control_layout.addWidget(self.button_send)
 		self.control_layout.addWidget(self.text_input)
-		self.control_layout.addWidget(self.button_new_chat)
+		self.control_layout.addWidget(self.button_new_translation)
 
 		self.control_widget.setLayout(self.control_layout)
 		self.control_widget.setFont(self.font)
@@ -233,7 +232,7 @@ class TestTWindow(QWidget):
 		self.display_items.append(display_item)
 		self.display_table_layout.addWidget(display_item)
 
-	def ask_question(self):
+	def translate(self):
 		# get text of the question
 		text = self.text_input.toPlainText()
 		if len(text) == 0:
@@ -244,15 +243,18 @@ class TestTWindow(QWidget):
 		# add question display
 		self.add_display_item(text, "#ffffff")
 
-		# if there is no previous chat, start a new chat
-		new_chat = "0"
-		if self.is_chat_empty:
-			self.no_chat_image_block.close()
-			self.is_chat_empty = False
-			new_chat = "1"
+		# if there is no previous translation, start a new translation
+		if self.is_translation_empty:
+			self.no_translation_image_block.close()
+			self.is_translation_empty = False
 
-		self.add_display_item(text+"_"+new_chat, "#f7f7f8"),
-		self.enable_text_input()
+		# Google Translation API
+		google_translate_api = GoogleTranslation_API(url=self.url, text=text.strip().strip("\n"))
+		google_translate_api.get_translated_signal.connect(lambda : {
+				self.add_display_item(google_translate_api.translated, "#f7f7f8"),
+				self.enable_text_input()
+			})	# add answer
+		google_translate_api.start()
 
 	def unable_text_input(self):
 		self.text_input.setReadOnly(True)
@@ -260,8 +262,8 @@ class TestTWindow(QWidget):
 		self.text_input.viewport().setCursor(Qt.ArrowCursor)
 		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#f7f7f8")
 
-		# unable new_chat
-		self.new_chat_enabled = False
+		# unable new_translation
+		self.new_translation_enabled = False
 
 		# loading...
 		text = "loading"
@@ -283,25 +285,25 @@ class TestTWindow(QWidget):
 		self.text_input.viewport().setCursor(Qt.IBeamCursor)
 		self.text_input.setStyleSheet(f"{self.text_input_style_sheet}background:#ffffff")
 
-		# enable new_chat
-		self.new_chat_enabled = True
+		# enable new_translation
+		self.new_translation_enabled = True
 
 		# loading...
 		self.timer.stop()
 		self.text_input.setText("")
 
-	def new_chat(self):
-		# create a new chat
-		if self.new_chat_enabled:
-			# delete all previous chats
+	def new_translation(self):
+		# create a new translation
+		if self.new_translation_enabled:
+			# delete all previous translations
 			for display_item in self.display_items:
 				display_item.deleteLater()
 			self.display_items = []
 
-			# show the no_chat display
-			if not self.is_chat_empty:
-				self.no_chat_image_block.show()
-				self.is_chat_empty = True
+			# show the no_translation display
+			if not self.is_translation_empty:
+				self.no_translation_image_block.show()
+				self.is_translation_empty = True
 
 	'''
 	event
@@ -311,14 +313,14 @@ class TestTWindow(QWidget):
 		if event.modifiers() == Qt.ControlModifier and event.key() in enter_key:
 			self.text_input.textCursor().insertText('\n')
 		elif event.key() in enter_key:
-			self.ask_question()
+			self.translate()
 		else:
 			self.text_input.keyPressEventRaw(event)
 
 
 plugin = {
-	"title" : "test",
-	"window" : TestTWindow,
+	"title" : "translate",
+	"window" : GoogleTranslationWindow,
 }
 
 __all__ = [plugin]

@@ -20,8 +20,8 @@ python qt.py
 
 For using 
 - [x] ChatGPT
+- [x] Google translation 
 - [ ] AI drawing
-- [ ] Google translation 
 
 TODO:
 - [ ] relative size adjustment

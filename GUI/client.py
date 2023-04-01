@@ -18,8 +18,8 @@ class LightChatGPTClient:
         self.main_flag = False
 
         # window
-        self.main_window = MainWindow(["chatgpt", "test"])
-        self.floating_window = FloatingWindow("data/images/icon.png")
+        self.main_window = MainWindow(["chatgpt", "google_translate"], self)
+        self.floating_window = FloatingWindow("data/images/icon.png", self)
 
         # init
         self.init_pos()
@@ -74,6 +74,7 @@ class LightChatGPTClient:
         self.hash_password = self.info["hash_password"]
 
         self.main_window.chatgpt_window.set_info(self.url, self.uid, self.hash_password)
+        self.main_window.init_plugins()
         
     '''
     signals

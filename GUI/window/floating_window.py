@@ -15,8 +15,10 @@ class FloatingWindow(QMainWindow):
 	get_user_signal = pyqtSignal(QMainWindow)	# signal to get user information in user window
 	set_user_signal = pyqtSignal(str, str)		# signal to set user information
 
-	def __init__(self, icon_path):
+	def __init__(self, icon_path, parent=None):
 		super().__init__()
+		self.parent = parent
+
 		# info
 		self.w = 100
 		self.h = 100
@@ -92,7 +94,7 @@ class FloatingWindow(QMainWindow):
 
 	def on_user_window_open(self):
 		# create user_window, and get user information to fill in the textform
-		user_window = UserWindow()
+		user_window = UserWindow(self)
 
 		# position
 		x = self.pos().x() - user_window.w

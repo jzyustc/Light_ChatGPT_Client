@@ -14,8 +14,10 @@ class MainWindow(QMainWindow):
 	switch_floating_window_signal = pyqtSignal(bool)	# signal to switch to the floating window
 	close_app_signal = pyqtSignal()						# signal to close the app
 
-	def __init__(self, plugins=["chatgpt"]):
+	def __init__(self, plugins=["chatgpt"], parent=None):
 		super().__init__()
+		self.parent = parent
+
 		# info
 		self.w = 600
 		self.h = 400
@@ -52,7 +54,7 @@ class MainWindow(QMainWindow):
 
 			plugin = plugin_pkg.plugin
 			self.__setattr__(f"{plugin_name}_window", plugin["window"](self, plugin["title"]))
-
+	
 			self.plugins_info[i] = {
 				"name" : plugin_name,
 				"title" : plugin["title"]
@@ -62,6 +64,12 @@ class MainWindow(QMainWindow):
 		# load plugin menu
 		self.plugins_menu_window = PlusinsMenuWindow(self)
 		self.plugins_menu_window.switch_plugin_signal.connect(self.switch_plugin)
+
+	def init_plugins(self):
+		for plugin_idx in self.plugins_info:
+			plugin_name = self.plugins_info[plugin_idx]["name"]
+			if plugin_name != "chatgpt":
+				getattr(self, f"{plugin_name}_window").set_info()
 
 	'''
 	GUI

@@ -5,3 +5,4 @@ from GUI.client import LightChatGPTClient
 if __name__ == '__main__':
     client = LightChatGPTClient()
     client.run()
+    
