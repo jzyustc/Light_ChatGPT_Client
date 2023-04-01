@@ -14,21 +14,15 @@ class UserWindow(QMainWindow):
 		self.w = 400
 		self.h = 300
 		self.title_h = 40
-		self.font_type = "Consolas"
 
 		# style
-		self.set_font()		        # font
+		self.font = self.parent.parent.main_window.font
 		self.signal_move = False	# title move
 
 		# GUI
 		self.main_UI()
 		self.title_UI()
 		self.user_UI()
-
-	def set_font(self):
-		self.font = QFont()
-		self.font.setPointSize(11)
-		self.font.setFamily(self.font_type)
 
 	'''
 	GUI
@@ -127,7 +121,7 @@ class UserWindow(QMainWindow):
 
         ## uid title
 		self.uid_title = QLabel()
-		self.uid_title.setFixedSize(int(item_h * 1.5), item_h)
+		self.uid_title.setFixedSize(int(item_h * 1.8), item_h)
 		self.uid_title.setText("uid")
 		self.uid_title.setFont(self.font)
 		self.uid_title.setAlignment(Qt.AlignCenter)
@@ -159,7 +153,7 @@ class UserWindow(QMainWindow):
 
         ## password title
 		self.password_title = QLabel()
-		self.password_title.setFixedSize(int(item_h * 1.5), item_h)
+		self.password_title.setFixedSize(int(item_h * 1.8), item_h)
 		self.password_title.setText("password")
 		self.password_title.setFont(self.font)
 		self.password_title.setAlignment(Qt.AlignCenter)

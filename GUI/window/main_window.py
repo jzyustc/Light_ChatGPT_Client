@@ -154,9 +154,11 @@ class MainWindow(QMainWindow):
 	'''
 	def set_window_opacity_half_tmp(self):
 		self.setWindowOpacity(self.op * 0.5)
+		self.plugins_menu_window.setWindowOpacity(self.op * 0.5)
 
 	def set_window_opacity(self, op):
 		self.setWindowOpacity(op)
+		self.plugins_menu_window.setWindowOpacity(op)
 
 	def change_window_opacity(self, angleY):
 		if angleY > 0:
@@ -164,6 +166,7 @@ class MainWindow(QMainWindow):
 		else:
 			self.op = max(0.01, self.op - 0.1)
 		self.setWindowOpacity(self.op)
+		self.plugins_menu_window.setWindowOpacity(self.op)
 
 	def wheel_on_window_event(self, event):
 		if self.op <= 0.3:
