@@ -56,6 +56,9 @@ class LightChatGPTClient:
         self.floating_window.close_app_signal.connect(self.close)
         self.main_window.close_app_signal.connect(self.close)
 
+        # shrink to the tray icons
+        self.floating_window.to_tray_signal.connect(self.tray_icon.show_or_hide)
+
         # user information
         self.floating_window.get_user_signal.connect(self.get_user_info_into_user_window)
         self.floating_window.set_user_signal.connect(self.set_user_info)

@@ -14,7 +14,7 @@ You can choose to run the application in python or in .exe file freely :
 **1. Run the GUI with python**:
 
 ```bash
-python qt.py
+python light_chat.py
 ```
 
 **2. Install and run .exe application**:
@@ -23,7 +23,7 @@ python qt.py
 python generate_pyinstall_cmd.py
 ```
 
-Then the application is installed in folder `./dist/qt`, and the application file is in  `./dist/qt/qt.exe`.
+Then the application is installed in folder `./dist/light_chat`, and the application file is in  `./dist/light_chat/light_chat.exe`.
 
 
 

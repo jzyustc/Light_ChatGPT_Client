@@ -11,6 +11,7 @@ from GUI.window.user_window import UserWindow
 
 class FloatingWindow(QMainWindow):
 	switch_main_window_signal = pyqtSignal()	# signal to switch to the main window
+	to_tray_signal = pyqtSignal()				# signal to shrink to the tray icon
 	close_app_signal = pyqtSignal()				# signal to close the app
 	get_user_signal = pyqtSignal(QMainWindow)	# signal to get user information in user window
 	set_user_signal = pyqtSignal(str, str)		# signal to set user information
@@ -84,7 +85,12 @@ class FloatingWindow(QMainWindow):
 		self.groupBox_menu.addAction(self.actionA)
 		self.actionA.triggered.connect(self.on_user_window_open)
 
-		# second item : close the whole app
+		# second item : user id
+		self.actionA = QAction(QIcon('data/images/tray.png'), u'to tray', self)
+		self.groupBox_menu.addAction(self.actionA)
+		self.actionA.triggered.connect(lambda : self.to_tray_signal.emit())
+
+		# third item : close the whole app
 		self.actionB = QAction(QIcon('data/images/close.png'), u'close', self)
 		self.groupBox_menu.addAction(self.actionB)
 		self.actionB.triggered.connect(lambda : self.close_app_signal.emit())

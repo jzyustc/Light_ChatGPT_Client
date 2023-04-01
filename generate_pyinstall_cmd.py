@@ -4,7 +4,7 @@ import shutil
 if __name__ == "__main__":
     # set these params
     py_path = "GUI"
-    main_py_name = "qt"
+    main_py_name = "light_chat"
     data_path = "data"
     python_path = "D:\Programs\Anaconda\envs\pyqt5\Lib\site-packages"
 
