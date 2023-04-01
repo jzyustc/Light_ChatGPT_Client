@@ -16,7 +16,6 @@ class PlusinsMenuWindow(QMainWindow):
 		# info
 		self.w = self.parent.title_text.width()
 		self.h = self.parent.title_h
-		self.font_type = "Consolas"
 
 		self.is_in_region = False
 
@@ -28,6 +27,7 @@ class PlusinsMenuWindow(QMainWindow):
 		for k in self.plugins_info:
 			self.add_plugin(k)
 
+		self.setFixedHeight(self.h * len(self.plugins_info))
 	'''
 	GUI
 	'''
@@ -37,6 +37,7 @@ class PlusinsMenuWindow(QMainWindow):
 		self.setWindowFlag(Qt.WindowStaysOnTopHint)	# pin to the top
 		self.setWindowFlag(Qt.SubWindow)			# sub_window
 		self.setAutoFillBackground(False)
+		self.setAttribute(Qt.WA_TranslucentBackground) 	# Set window transparency
 
 		# set window size
 		self.setObjectName("user")
@@ -47,7 +48,7 @@ class PlusinsMenuWindow(QMainWindow):
 		self.main_layout = QGridLayout()
 		self.main_layout.setContentsMargins(0, 0, 0, 0)
 		self.main_layout.setSpacing(0)
-		self.main_widget.setStyleSheet(f"border-top:none;background-color:#f8f8f8")
+		self.main_widget.setStyleSheet(f"border:none;background-color:rgba(255, 255, 255, 0.01)")
 		self.main_widget.setLayout(self.main_layout)
 
 		self.setCentralWidget(self.main_widget)
