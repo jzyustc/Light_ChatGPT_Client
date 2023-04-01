@@ -3,6 +3,7 @@ import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 from GUI.window.main_window import MainWindow
 from GUI.window.floating_window import FloatingWindow
+from GUI.window.tray_icon import TrayIcon
 from GUI.utils.global_hot_key import GlobalHotkeys
 
 from system_hotkey import SystemHotkey
@@ -16,10 +17,12 @@ class LightChatGPTClient:
 
         # a flag to show whether it is main windw now
         self.main_flag = False
+        self.is_hidden = False
 
         # window
         self.main_window = MainWindow(["chatgpt", "google_translate"], self)
         self.floating_window = FloatingWindow("data/images/icon.png", self)
+        self.tray_icon = TrayIcon("data/images/icon.png", self)
 
         # init
         self.init_pos()
@@ -144,12 +147,25 @@ class LightChatGPTClient:
         else:
             pass
 
+    def show(self):
+        # show floating / main window 
+        self.floating_window.show()
+        self.main_window.hide()
+        self.is_hidden = False
+
+    def hide(self):
+        # hide both floating and main window 
+        self.floating_window.hide()
+        self.main_window.hide()
+        self.is_hidden = True
+
+
     '''
     run and close
     '''
     def run(self):
         self.floating_window.show()
-        # self.switch_main()
+        self.tray_icon.show()
         sys.exit(self.app.exec_())
 
     def close(self):
