@@ -70,6 +70,19 @@ class LightChatGPTClient:
 
     def register_hot_keys(self):
         self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
+        self.hot_keys.register(('control', 'tab'), callback=lambda x:self.global_hot_keys.send_key('ctrl+tab'))
+
+    def hot_key_func(self, hot_key_value):
+        if hot_key_value == 'ctrl+t':
+            # switch main / flaoting window
+            self.switch_window()
+        elif hot_key_value == 'ctrl+tab':
+            # switch to the next plugins in the main window
+            plugin_idx = self.main_window.plugins_layout.currentIndex()
+            next_plugin_idx = (plugin_idx + 1) % len(self.main_window.plugins_info)
+            self.main_window.switch_plugin(next_plugin_idx)
+        else:
+            pass
 
     def init_user(self, info_path):
         self.user_info_path = info_path
@@ -146,13 +159,6 @@ class LightChatGPTClient:
                 "hash_password": hash_password
             }
             json.dump(user_info,f)
-
-    def hot_key_func(self, hot_key_value):
-        # switch to main window
-        if hot_key_value == 'ctrl+t':
-            self.switch_window()
-        else:
-            pass
 
     def show(self):
         # show floating / main window 
