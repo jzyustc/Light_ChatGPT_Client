@@ -7,14 +7,15 @@ from PyQt5.QtWidgets import *
 
 
 from GUI.window.user_window import UserWindow
+from GUI.window.settings_window import SettingsWindow
 
 
 class FloatingWindow(QMainWindow):
 	switch_main_window_signal = pyqtSignal()	# signal to switch to the main window
 	to_tray_signal = pyqtSignal()				# signal to shrink to the tray icon
 	close_app_signal = pyqtSignal()				# signal to close the app
-	get_user_signal = pyqtSignal(QMainWindow)	# signal to get user information in user window
 	set_user_signal = pyqtSignal(str, str)		# signal to set user information
+	set_settings_signal = pyqtSignal(list, dict)		# signal to set settings
 
 	def __init__(self, icon_path, parent=None):
 		super().__init__()
@@ -81,19 +82,24 @@ class FloatingWindow(QMainWindow):
 		self.groupBox_menu = QMenu(self)
 
 		# first item : user id
-		self.actionA = QAction(QIcon('data/images/user.png'), u'user', self)
-		self.groupBox_menu.addAction(self.actionA)
-		self.actionA.triggered.connect(self.on_user_window_open)
+		self.action_user = QAction(QIcon('data/images/user.png'), u'user', self)
+		self.groupBox_menu.addAction(self.action_user)
+		self.action_user.triggered.connect(self.on_user_window_open)
 
-		# second item : user id
-		self.actionA = QAction(QIcon('data/images/tray.png'), u'to tray', self)
-		self.groupBox_menu.addAction(self.actionA)
-		self.actionA.triggered.connect(lambda : self.to_tray_signal.emit())
+		# second item : settings
+		self.action_settings = QAction(QIcon('data/images/settings.png'), u'settings', self)
+		self.groupBox_menu.addAction(self.action_settings)
+		self.action_settings.triggered.connect(self.on_settings_window_open)
 
-		# third item : close the whole app
-		self.actionB = QAction(QIcon('data/images/close.png'), u'close', self)
-		self.groupBox_menu.addAction(self.actionB)
-		self.actionB.triggered.connect(lambda : self.close_app_signal.emit())
+		# third item : tray
+		self.action_tray = QAction(QIcon('data/images/tray.png'), u'to tray', self)
+		self.groupBox_menu.addAction(self.action_tray)
+		self.action_tray.triggered.connect(lambda : self.to_tray_signal.emit())
+
+		# forth item : close the whole app
+		self.action_close = QAction(QIcon('data/images/close.png'), u'close', self)
+		self.groupBox_menu.addAction(self.action_close)
+		self.action_close.triggered.connect(lambda : self.close_app_signal.emit())
 
 		# menus position
 		self.groupBox_menu.popup(QCursor.pos())
@@ -107,8 +113,8 @@ class FloatingWindow(QMainWindow):
 		y = self.pos().y() - (user_window.h - self.h) / 2
 		user_window.set_pos(x, y)
 
-		# signal
-		self.get_user_signal.emit(user_window)
+		# set contents
+		user_window.uid_text_input.setText(self.parent.uid)
 
 		# show
 		user_window.show()
@@ -152,6 +158,68 @@ class FloatingWindow(QMainWindow):
 		# close
 		QMessageBox.information(self, 'save', 'Succeed to set user!', QMessageBox.Yes, QMessageBox.Yes)
 		user_window.on_window_close()
+
+	def on_settings_window_open(self):
+		# create settings_window, and get settings information to fill in the textform
+		settings_window = SettingsWindow(self)
+
+		# position
+		x = self.pos().x() - settings_window.w
+		y = self.pos().y() - (settings_window.h - self.h) / 2
+		settings_window.set_pos(x, y)
+
+		# set contents
+		settings_window.settings_block_layout.addStretch(2)
+
+		## for global_hot_keys
+		for content in self.parent.settings["global_hot_keys"]:
+			key = self.parent.settings["global_hot_keys"][content]["key"]
+			text = self.parent.settings["global_hot_keys"][content]["text"]
+
+			# create item
+			item = settings_window.item_UI(text, key)
+
+			# logging
+			settings_window.settings_list.append({
+					"keys" : ["global_hot_keys", content],
+					"item" : item
+				})
+			
+			# add to layout
+			settings_window.settings_block_layout.addWidget(item)
+			settings_window.settings_block_layout.addStretch(1)
+
+		settings_window.settings_block_layout.addStretch(1)
+		settings_window.settings_block_layout.addWidget(settings_window.save_button_block)
+		settings_window.settings_block_layout.addStretch(2)
+
+		# show
+		settings_window.show()
+
+		# set the close signal event
+		settings_window.save_settings_signal.connect(self.on_settings_window_save)
+
+	def on_settings_window_save(self, settings_window):
+		# when settings_window closes, get the uid and password, then set them into settings information
+		settings_global_hot_keys = {}
+
+		for setting in settings_window.settings_list:
+
+			# for global_hot_keys : get keys
+			if setting["keys"][0] == "global_hot_keys":
+				content = setting["keys"][1]
+				item = setting["item"]
+				key = item.findChild(QTextEdit, "text_input").toPlainText()
+				
+				settings_global_hot_keys[content] = {}
+				settings_global_hot_keys[content]["key"] = key
+
+		# for global_hot_keys : save info
+		self.set_settings_signal.emit(["global_hot_keys"], settings_global_hot_keys)
+
+		# close
+		QMessageBox.information(self, 'save', 'Succeed to set settings!', QMessageBox.Yes, QMessageBox.Yes)
+		settings_window.on_window_close()
 
 	def mousePressEvent(self, event):
 		if event.buttons() == Qt.LeftButton:

@@ -25,15 +25,22 @@ class LightChatGPTClient:
         self.tray_icon = TrayIcon("data/images/icon.png", self)
 
         # init
+        self.init_settings(info_path="data/settings.json")
+        
         self.init_pos()
         self.init_hot_keys()
         self.init_signals()
         self.init_user(info_path="data/info.json")
 
+        self.main_window.init_plugins()
 
     '''
     initialize
     '''
+    def init_settings(self, info_path):
+        self.settings_path = info_path
+        self.settings = json.load(open(info_path))
+
     def init_pos(self):
         # init pos
         device = QtWidgets.QApplication.desktop()
@@ -60,8 +67,10 @@ class LightChatGPTClient:
         self.floating_window.to_tray_signal.connect(self.tray_icon.show_or_hide)
 
         # user information
-        self.floating_window.get_user_signal.connect(self.get_user_info_into_user_window)
         self.floating_window.set_user_signal.connect(self.set_user_info)
+        
+        # setiings
+        self.floating_window.set_settings_signal.connect(self.set_settings)
 
     def init_hot_keys(self):
         self.hot_keys = SystemHotkey()
@@ -69,18 +78,30 @@ class LightChatGPTClient:
         self.global_hot_keys = GlobalHotkeys()
 
     def register_hot_keys(self):
-        self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
-        self.hot_keys.register(('control', 'tab'), callback=lambda x:self.global_hot_keys.send_key('ctrl+tab'))
-        self.is_global_host_key_enabled = True
+        global_hot_key_settings = self.settings["global_hot_keys"]
 
+        def register(k, c):
+            self.hot_keys.register(k, callback=lambda x:self.global_hot_keys.send_key(c))
+
+        for content in global_hot_key_settings:
+            key = tuple(global_hot_key_settings[content]["key"].strip().split("+"))
+            register(key, content)
+
+    def unregister_hot_keys(self):
+        global_hot_key_settings = self.settings["global_hot_keys"]
+
+        def unregister(k):
+            self.hot_keys.unregister(k)
+
+        for content in global_hot_key_settings:
+            key = tuple(global_hot_key_settings[content]["key"].strip().split("+"))
+            unregister(key)
+            
     def hot_key_func(self, hot_key_value):
-        if not self.is_global_host_key_enabled:
-            return
-
-        if hot_key_value == 'ctrl+t':
+        if hot_key_value == 'switch_main_floating_window':
             # switch main / flaoting window
             self.switch_window()
-        elif hot_key_value == 'ctrl+tab':
+        elif hot_key_value == 'switch_next_plugin':
             # switch to the next plugins in the main window
             plugin_idx = self.main_window.plugins_layout.currentIndex()
             next_plugin_idx = (plugin_idx + 1) % len(self.main_window.plugins_info)
@@ -97,7 +118,6 @@ class LightChatGPTClient:
         self.hash_password = self.info["hash_password"]
 
         self.main_window.chatgpt_window.set_info(self.url, self.uid, self.hash_password)
-        self.main_window.init_plugins()
         
     '''
     signals
@@ -147,10 +167,6 @@ class LightChatGPTClient:
             self.switch_main()
             self.main_flag = True
 
-    def get_user_info_into_user_window(self, user_window):
-        user_window.uid_text_input.setText(self.uid)
-        # user_window.password_text_input.setText(self.password)
-
     def set_user_info(self, uid, hash_password):
         self.uid = self.main_window.uid = uid
         self.hash_password = self.main_window.hash_password = hash_password
@@ -163,6 +179,37 @@ class LightChatGPTClient:
                 "hash_password": hash_password
             }
             json.dump(user_info,f)
+
+    def set_settings(self, keys, settings):
+
+        # unregister
+        self.unregister_hot_keys()
+
+        # change self.settings
+        s = self.settings
+        for i in range(len(keys) - 1):
+            s = s[keys(i)]
+
+        def search_and_replace(s_raw, s_tar):
+            for k in s_tar:
+                c_tar = s_tar[k]
+
+                # add new k / replace
+                if (k not in s_raw) or (type(c_tar) != dict):
+                    s_raw[k] = c_tar
+                    return 
+            
+                # next level
+                search_and_replace(s_raw[k], c_tar)
+
+        search_and_replace(s[keys[-1]], settings)
+        
+        # register
+        self.register_hot_keys()
+
+        # write into settings.json
+        with open(self.settings_path, "w") as f:
+            json.dump(self.settings,f)
 
     def show(self):
         # show floating / main window 
