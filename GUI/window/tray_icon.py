@@ -12,9 +12,11 @@ class TrayIcon(QSystemTrayIcon):
 		# create menu
 		self.menu = QMenu()
 		self.showAction = QAction("hide", self, triggered=self.show_or_hide)
+		self.hotkeyAction = QAction("disable hot key", self, triggered=self.global_hot_key_enable_or_disable)
 		self.quitAction = QAction("close", self, triggered=self.close)
  
 		self.menu.addAction(self.showAction)
+		self.menu.addAction(self.hotkeyAction)
 		self.menu.addAction(self.quitAction)
 		self.setContextMenu(self.menu)
  
@@ -28,6 +30,14 @@ class TrayIcon(QSystemTrayIcon):
 		else:
 			self.parent.hide()
 			self.showAction.setText("show")
+ 
+	def global_hot_key_enable_or_disable(self):
+		if self.parent.is_global_host_key_enabled:
+			self.parent.is_global_host_key_enabled = False
+			self.hotkeyAction.setText("enable hot key")
+		else:
+			self.parent.is_global_host_key_enabled = True
+			self.hotkeyAction.setText("disable hot key")
  
 	def close(self):
 		self.parent.close()

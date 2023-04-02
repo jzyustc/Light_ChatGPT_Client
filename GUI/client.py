@@ -71,8 +71,12 @@ class LightChatGPTClient:
     def register_hot_keys(self):
         self.hot_keys.register(('control', 't'), callback=lambda x:self.global_hot_keys.send_key('ctrl+t'))
         self.hot_keys.register(('control', 'tab'), callback=lambda x:self.global_hot_keys.send_key('ctrl+tab'))
+        self.is_global_host_key_enabled = True
 
     def hot_key_func(self, hot_key_value):
+        if not self.is_global_host_key_enabled:
+            return
+
         if hot_key_value == 'ctrl+t':
             # switch main / flaoting window
             self.switch_window()
