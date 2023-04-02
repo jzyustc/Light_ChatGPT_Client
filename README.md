@@ -20,7 +20,7 @@ python light_chat.py
 **2. Install and run .exe application**:
 
 ```bash
-python generate_pyinstall_cmd.py
+python install.py
 ```
 
 Then the application is installed in folder `./dist/light_chat`, and the application file is in  `./dist/light_chat/light_chat.exe`.
