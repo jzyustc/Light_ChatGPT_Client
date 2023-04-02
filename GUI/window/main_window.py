@@ -232,6 +232,11 @@ class MainWindow(QMainWindow):
 		x, y = self.pos().x(), self.pos().y()
 		return device_h, device_w, x, y
 		
+	def set_focus(self):
+		plugin_idx = self.plugins_layout.currentIndex()
+		plugin_name = self.plugins_info[plugin_idx]["name"]
+		getattr(self, f"{plugin_name}_window").set_focus()
+
 	'''
 	control
 	'''

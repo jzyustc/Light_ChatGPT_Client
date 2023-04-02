@@ -41,6 +41,9 @@ class GoogleTranslationWindow(QWidget):
 		
         # add to parent
 		self.parent.plugins_layout.addWidget(self)
+
+		# set focus
+		self.set_focus()
         
 	def set_info(self):
 		self.url = self.parent.parent.url
@@ -52,6 +55,9 @@ class GoogleTranslationWindow(QWidget):
 		
 	def set_hot_keys(self):
 		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_translation)
+
+	def set_focus(self):
+		self.text_input.setFocus()
 
 	'''
 	GUI

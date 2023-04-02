@@ -100,6 +100,10 @@ class LightChatGPTClient:
         self.main_window.show()
         self.floating_window.hide()
 
+        # activate main window
+        self.main_window.activateWindow()
+        self.main_window.set_focus()
+
     def switch_floating(self, check_out_of_range):
         device_h, device_w, nx, ny = self.main_window.get_device_shape_and_pos()
         nh, nw = self.main_window.h, self.main_window.w

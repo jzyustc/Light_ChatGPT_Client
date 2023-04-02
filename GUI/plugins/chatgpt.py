@@ -38,10 +38,13 @@ class ChatGPTWindow(QWidget):
 		self.window_UI()
 		self.display_UI()
 		self.control_UI()
-		
+
         # add to parent
 		self.parent.plugins_layout.addWidget(self)
     
+		# set focus
+		self.set_focus()
+		
 	def set_info(self, url, uid, hash_password):
 		self.url = url
 		self.uid = uid
@@ -54,6 +57,9 @@ class ChatGPTWindow(QWidget):
 		
 	def set_hot_keys(self):
 		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_chat)
+
+	def set_focus(self):
+		self.text_input.setFocus()
 
 	'''
 	GUI
