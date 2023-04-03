@@ -38,9 +38,10 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
 <summary> It consists of Floating window, Main window and Tray icon. </summary>
 
 - Floating window <img src=data/images/icon.png height=14px>:
-  - `left-click`[`hot-key:ctrl+t`] - show the main window
+  - `left-click`[`hot-key:ctrl+space`] - show the main window
   - `right-click` - show a menu
     - <img src=data/images/user.png height=14px> `user` - set user information
+    - <img src=data/images/settings.png height=14px> `settings` - change settings (e.g., global hot key)
     - <img src=data/images/tray.png height=14px> `to tray` - shrink to the tray icon
     - <img src=data/images/close.png height=14px> `close` - close the applciation 
 - Main window:
@@ -48,7 +49,7 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
     - `plugin name` - shows the name of current plugin, e.g., `light chat` 
       - switch the plugin by *moving your mouse on it and click the target plugin*.
       - [`hot-key:ctrl+tab`] : swtich to the next plugin
-    - <img src=data/images/shrink.png height=14px> `shrink icon`[`hot-key:ctrl+t`] - shrink the window into the floating window
+    - <img src=data/images/shrink.png height=14px> `shrink icon`[`hot-key:ctrl+space`] - shrink the window into the floating window
   - `plugin` - the main content of the window, e.g., `Light Chat` plugin.
   - [`hot-key:ctrl+q`] : close the application
 - Tray icon:
@@ -70,7 +71,7 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
   - `questions` - shown with white background
   - `answers` - shown with gray background
 - Control region - get input from you
-  - <img src=data/images/send.png height=14px> `send icon`[`hot-key:enter`] - send the text in the text box
+  - <img src=data/images/send.png height=14px> `send icon`[`hot-key:enter / ctrl+space`] - send the text in the text box
   - `text box` - input your question in it
   - <img src=data/images/new.png height=14px> `new icon`[`hot-key:ctrl+n`]- refresh the history and start a new chat
 
@@ -88,7 +89,7 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
   - `text` - shown with white background
   - `result` - shown with gray background
 - Control region - get input from you
-  - <img src=data/images/send.png height=14px> `send icon`[`hot-key:enter`] - send the text in the text box
+  - <img src=data/images/send.png height=14px> `send icon`[`hot-key:enter / ctrl+space`] - send the text in the text box
   - `text box` - input your question in it
   - <img src=data/images/new.png height=14px> `new icon`[`hot-key:ctrl+n`]- refresh the history
 

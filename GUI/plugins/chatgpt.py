@@ -57,6 +57,7 @@ class ChatGPTWindow(QWidget):
 		
 	def set_hot_keys(self):
 		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_N, self.new_chat)
+		self.hot_keys.add_hot_key(Qt.ControlModifier, Qt.Key_B, self.ask_question)
 
 	def set_focus(self):
 		self.text_input.setFocus()
