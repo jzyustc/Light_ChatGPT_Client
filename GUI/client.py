@@ -116,8 +116,6 @@ class LightChatGPTClient:
         self.url = self.info["url"]
         self.uid = self.info["uid"]
         self.hash_password = self.info["hash_password"]
-
-        self.main_window.chatgpt_window.set_info(self.url, self.uid, self.hash_password)
         
     '''
     signals

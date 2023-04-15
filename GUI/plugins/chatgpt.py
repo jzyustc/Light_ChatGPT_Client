@@ -45,10 +45,8 @@ class ChatGPTWindow(QWidget):
 		# set focus
 		self.set_focus()
 		
-	def set_info(self, url, uid, hash_password):
-		self.url = url
-		self.uid = uid
-		self.hash_password = hash_password
+	def set_info(self):
+		self.url = self.parent.parent.url
 
 	def set_font_background(self):
 		self.font_background = QFont()
@@ -260,7 +258,9 @@ class ChatGPTWindow(QWidget):
 			new_chat = "1"
 
 		# chatgpt API
-		chatgpt_api = ChatGPT_API(url=self.url, uid=self.uid, hash_password=self.hash_password, new_chat=new_chat, question=text)
+		uid = self.parent.parent.uid
+		hash_password = self.parent.parent.hash_password
+		chatgpt_api = ChatGPT_API(url=self.url, uid=uid, hash_password=hash_password, new_chat=new_chat, question=text)
 		chatgpt_api.get_answer_signal.connect(lambda : {
 				self.add_display_item(chatgpt_api.answer, "#f7f7f8"),
 				self.enable_text_input()

@@ -68,8 +68,7 @@ class MainWindow(QMainWindow):
 	def init_plugins(self):
 		for plugin_idx in self.plugins_info:
 			plugin_name = self.plugins_info[plugin_idx]["name"]
-			if plugin_name != "chatgpt":
-				getattr(self, f"{plugin_name}_window").set_info()
+			getattr(self, f"{plugin_name}_window").set_info()
 
 	'''
 	GUI
