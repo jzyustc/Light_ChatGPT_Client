@@ -118,6 +118,7 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
 ### TODOs
 - [x] Plugin - ChatGPT
 - [x] Plugin - Google translation 
+- [ ] Plugin - (HTTP) File transfer 
 - [ ] Plugin - AI drawing
 - [ ] GUI - relative size adjustment
 - [ ] GUI - resize window
