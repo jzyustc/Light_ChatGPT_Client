@@ -6,7 +6,7 @@ if __name__ == "__main__":
     py_path = "GUI"
     main_py_name = "light_chat"
     data_path = "data"
-    python_path = "D:\Programs\Anaconda\envs\pyqt5\Lib\site-packages"
+    python_path = "D:/Programs/Work/anaconda3/envs/py38/Lib/site-packages"
 
     # install
     def get_py_files(folder_path):

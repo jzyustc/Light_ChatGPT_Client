@@ -20,7 +20,7 @@ class LightChatGPTClient:
         self.is_hidden = False
 
         # window
-        self.main_window = MainWindow(["chatgpt", "google_translate"], self)
+        self.main_window = MainWindow(["chatgpt", "google_translate", "file_transfer_server"], self)
         self.floating_window = FloatingWindow("data/images/icon.png", self)
         self.tray_icon = TrayIcon("data/images/icon.png", self)
 
