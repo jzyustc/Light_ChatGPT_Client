@@ -1,6 +1,5 @@
 import sys
-from multiprocessing import Process
-from PyQt5 import QtCore, QtGui, QtWidgets
+from multiprocessing import Process, freeze_support
 from GUI.client import LightChatGPTClient
 
 import GUI.api
@@ -10,6 +9,7 @@ import GUI.api.google_translation_api
 import GUI.plugins
 import GUI.plugins.chatgpt
 import GUI.plugins.google_translate
+import GUI.plugins.file_transfer_server
 
 import GUI.utils
 import GUI.utils.global_hot_key
@@ -27,13 +27,16 @@ def run_GUI():
     client = LightChatGPTClient()
     client.run()
 
-
+import flask
+import HTTPServer.http_server_api
 from HTTPServer.http_server_api import create_http_server
 
 def run_HTTPServer(ip, port, share_data_path):
     create_http_server(ip, port, share_data_path)
 
 if __name__ == '__main__':
+    # prevent the packaged .exe program generate in a loop
+    freeze_support()
     
     p1 = Process(target=run_GUI)
     p1.start()

@@ -110,7 +110,12 @@ Then the application is installed in folder `./dist/light_chat`, and the applica
     # this command is in LightChatGPTClient.__init__ : 
     self.main_window = MainWindow([..., "your_plugin_file_name"], self)
     ```
-4. Run the application
+4. (For .exe) import the new .py files as a library in `light_chat.py`:
+    ```
+    import GUI.plugins.xxx
+    ```
+   
+5. Run the application
 
 </details>
 

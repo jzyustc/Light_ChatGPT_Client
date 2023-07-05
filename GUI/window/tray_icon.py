@@ -32,10 +32,3 @@ class TrayIcon(QSystemTrayIcon):
 	def close(self):
 		self.parent.close()
  
-
- 
-if __name__ == '__main__':
-   app = QApplication(sys.argv)
-   tray = TrayIcon()
-   tray.show()
-   sys.exit(app.exec_())

@@ -3,7 +3,7 @@ import shutil
 
 if __name__ == "__main__":
     # set these params
-    py_path = "GUI"
+    py_paths = ["GUI", "HTTPServer"]
     main_py_name = "light_chat"
     data_path = "data"
     python_path = "D:/Programs/Work/anaconda3/envs/py38/Lib/site-packages"
@@ -20,7 +20,9 @@ if __name__ == "__main__":
                 py_files += [path]
         return py_files
 
-    py_files = [main_py_name + ".py"] + get_py_files(py_path)
+    py_files = [main_py_name + ".py"]
+    for py_path in py_paths:
+        py_files += get_py_files(py_path)
 
     # generate cmd
     cmd = "pyinstaller -y -w "
