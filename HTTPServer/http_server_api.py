@@ -8,12 +8,13 @@ def create_http_server(ip="0.0.0.0", port=8000, share_data_path="data/file_trans
     ######################
     ## 1. File Transfer ##
     ######################
-    share_data = open(share_data_path, 'r')
 
     @app.route("/file_transfer/view")
     def file_transfer_view_path():
+        with open(share_data_path, 'r') as share_data:
+            shared_folders = json.loads(share_data.read())
+
         # path : shared_folder/sub_path
-        shared_folders = json.loads(share_data.read())
         shared_folder = shared_folders[request.args.get('shareId')]["path"]
         sub_path = request.args.get('sub')
         sub_path = "" if sub_path is None else sub_path
@@ -30,8 +31,10 @@ def create_http_server(ip="0.0.0.0", port=8000, share_data_path="data/file_trans
 
     @app.route("/file_transfer/download")
     def file_transfer_download_path():
+        with open(share_data_path, 'r') as share_data:
+            shared_folders = json.loads(share_data.read())
+            
         # path : shared_folder/sub_path
-        shared_folders = json.loads(share_data.read())
         shared_folder = shared_folders[request.args.get('shareId')]["path"]
         sub_path = request.args.get('sub')
         sub_path = "" if sub_path is None else sub_path
